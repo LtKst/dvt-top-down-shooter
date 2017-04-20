@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 86b3e0e7debbc4746879e472b143d12e
+timeCreated: 1491823184
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - projectile: {instanceID: 0}
+  - ammoText: {instanceID: 0}
+  - reloadAudioClip: {fileID: 8300000, guid: 18f6499a94e58f448a7d90604e3ea75e, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
