@@ -18,6 +18,9 @@ public class PlayerInput : MonoBehaviour {
 
     void Update()
     {
+        // Movement
+        playerMovement.Move(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+
         // Rotation
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -34,6 +37,12 @@ public class PlayerInput : MonoBehaviour {
         if (Input.GetMouseButton(0))
         {
             playerShoot.Shoot();
+        }
+
+        // Reloading
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            playerShoot.isReloading = true;
         }
     }
 }

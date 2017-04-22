@@ -35,7 +35,12 @@ public class Projectile : MonoBehaviour {
 
     void OnTriggerEnter(Collider hit)
     {
-        if (hit.GetComponent<ProjectileObstacle>())
+        if (hit.GetComponent<EnemyHealth>())
+        {
+            hit.GetComponent<EnemyHealth>().Die();
+            Destroy(gameObject);
+        }
+        else if (hit.GetComponent<ProjectileObstacle>())
         {
             hit.GetComponent<ProjectileObstacle>().Hit(gameObject.transform.forward);
             Destroy(gameObject);

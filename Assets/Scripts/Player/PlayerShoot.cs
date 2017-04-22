@@ -28,7 +28,7 @@ public class PlayerShoot : MonoBehaviour {
     private bool reloadSoundPlayed = false;
 
     [SerializeField]
-    private AudioClip shootAudioClip;
+    private AudioClip[] shootAudioClip;
     [SerializeField]
     private AudioClip reloadAudioClip;
 
@@ -61,7 +61,7 @@ public class PlayerShoot : MonoBehaviour {
     {
         ammoText.text = bulletsInMag.ToString() + "/" + bulletsCapacity.ToString();
 
-        if (isReloading && reloadTime >= 0)
+        if (isReloading && reloadTime >= 0 && bulletsInMag < bulletsCapacity)
         {
             reloadTime -= Time.deltaTime;
 
@@ -77,6 +77,10 @@ public class PlayerShoot : MonoBehaviour {
             isReloading = false;
             reloadTime = initialReloadTime;
             reloadSoundPlayed = false;
+        }
+        else if (bulletsInMag >= bulletsCapacity)
+        {
+            isReloading = false;
         }
 
         if (shootDelay >= 0)
@@ -98,7 +102,7 @@ public class PlayerShoot : MonoBehaviour {
 
             bulletsInMag -= 1;
 
-            audioSource.PlayOneShot(shootAudioClip);
+            audioSource.PlayOneShot(shootAudioClip[Random.Range(0, shootAudioClip.Length)]);
         }
         else if (bulletsInMag <= 0)
         {
