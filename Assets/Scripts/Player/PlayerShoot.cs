@@ -7,13 +7,16 @@ using UnityEngine;
 /// </summary>
 public class PlayerShoot : MonoBehaviour {
 
+    [Header("GameObjects")]
+    [SerializeField]
+    private Transform gun;
     [SerializeField]
     private GameObject projectile;
-
-    private Transform parent;
+    private Transform projectileParent;
 
     private AudioSource audioSource;
 
+    [Header("Ammo")]
     [SerializeField]
     private int bulletsCapacity = 32;
     private int bulletsInMag;
@@ -28,23 +31,25 @@ public class PlayerShoot : MonoBehaviour {
     private bool reloadSoundPlayed = false;
 
     [SerializeField]
+    private float shootDelay = 0.3f;
+    private float initialShootDelay;
+
+    [Header("Audio")]
+    [SerializeField]
     private AudioClip[] shootAudioClip;
     [SerializeField]
     private AudioClip reloadAudioClip;
 
-    [SerializeField]
-    private float shootDelay = 0.3f;
-    private float initialShootDelay;
-
+    [Header("UI")]
     [SerializeField]
     private RectTransform ammoBarRect;
     private float initialAmmoBarWidth;
     [SerializeField]
     private UnityEngine.UI.Text ammoText;
 
-    private void Awake()
+    void Awake()
     {
-        parent = GameObject.FindGameObjectWithTag("ProjectileParent").transform;
+        projectileParent = new GameObject("Projectile Parent").transform;
 
         audioSource = gameObject.GetComponent<AudioSource>();
 
@@ -59,8 +64,17 @@ public class PlayerShoot : MonoBehaviour {
 
     void Update()
     {
-        ammoText.text = bulletsInMag.ToString() + "/" + bulletsCapacity.ToString();
+        // Set UI text
+        if (!isReloading)
+        {
+            ammoText.text = bulletsInMag.ToString() + "/" + bulletsCapacity.ToString();
+        }
+        else
+        {
+            ammoText.text = bulletsInMag.ToString() + "/" + bulletsCapacity.ToString() + " Reloading...";
+        }
 
+        // Start reloading
         if (isReloading && reloadTime >= 0 && bulletsInMag < bulletsCapacity)
         {
             reloadTime -= Time.deltaTime;
@@ -71,6 +85,7 @@ public class PlayerShoot : MonoBehaviour {
                 reloadSoundPlayed = true;
             }
         }
+        // Done Reloading
         else if (isReloading && reloadTime <= 0)
         {
             bulletsInMag = bulletsCapacity;
@@ -78,13 +93,16 @@ public class PlayerShoot : MonoBehaviour {
             reloadTime = initialReloadTime;
             reloadSoundPlayed = false;
         }
+        // No need to reload
         else if (bulletsInMag >= bulletsCapacity)
         {
             isReloading = false;
         }
 
         if (shootDelay >= 0)
+        {
             shootDelay -= Time.deltaTime;
+        }
 
         ammoBarRect.sizeDelta = Vector2.Lerp(ammoBarRect.sizeDelta, new Vector2(initialAmmoBarWidth - (initialAmmoBarWidth / bulletsCapacity)*(bulletsCapacity-bulletsInMag), ammoBarRect.sizeDelta.y), Time.deltaTime*25);
     }
@@ -94,8 +112,8 @@ public class PlayerShoot : MonoBehaviour {
         if (bulletsInMag > 0 && shootDelay <= 0)
         {
             GameObject projectileInstance = Instantiate(projectile);
-            projectileInstance.transform.SetParent(parent);
-            projectileInstance.transform.position = gameObject.transform.position;
+            projectileInstance.transform.SetParent(projectileParent);
+            projectileInstance.transform.position = gun.position;
             projectileInstance.transform.rotation = gameObject.transform.rotation;
 
             shootDelay = initialShootDelay;
@@ -107,6 +125,18 @@ public class PlayerShoot : MonoBehaviour {
         else if (bulletsInMag <= 0)
         {
             isReloading = true;
+        }
+    }
+
+    public int BulletCapacity
+    {
+        get
+        {
+            return bulletsCapacity;
+        }
+        set
+        {
+            bulletsCapacity = value;
         }
     }
 }

@@ -4,16 +4,38 @@ using UnityEngine;
 
 public class EnemyHealth : MonoBehaviour {
 
-    private bool dead;
+    [SerializeField]
+    private AudioClip hitAudioClip;
+    [SerializeField]
+    private AudioClip shutdownAudioClip;
+    private AudioSource audioSource;
 
-    private void Update()
+    [SerializeField]
+    private GameObject smoke;
+
+    private Rigidbody rb;
+
+    [HideInInspector]
+    public bool isDead;
+
+    private void Awake()
     {
-        if (dead)
-            gameObject.GetComponent<Rigidbody>().AddForce(new Vector3(0, 50, 0), ForceMode.Force);
+        audioSource = GetComponent<AudioSource>();
+        rb = GetComponent<Rigidbody>();
     }
 
     public void Die()
     {
-        dead = true;
+        audioSource.PlayOneShot(hitAudioClip);
+
+        if (!isDead)
+        {
+            isDead = true;
+
+            audioSource.PlayOneShot(shutdownAudioClip);
+
+            smoke.SetActive(true);
+            rb.useGravity = true;
+        }
     }
 }

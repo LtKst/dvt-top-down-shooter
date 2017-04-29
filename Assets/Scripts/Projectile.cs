@@ -9,17 +9,17 @@ public class Projectile : MonoBehaviour {
 
     [SerializeField]
     private float speed = 40;
-    private Rigidbody rigidbody;
+    private Rigidbody rb;
 
     private Transform playerTransform;
 
-    void Awake()
+    private void Awake()
     {
-        rigidbody = GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody>();
         playerTransform = GameObject.FindWithTag("Player").transform;
     }
 
-    void Update()
+    private void Update()
     {
         if (Vector3.Distance(playerTransform.position, transform.position) > 100)
         {
@@ -27,22 +27,22 @@ public class Projectile : MonoBehaviour {
         }
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         Vector3 velocity = transform.forward * (Time.fixedDeltaTime * speed);
-        rigidbody.MovePosition(rigidbody.position + velocity);
+        rb.MovePosition(rb.position + velocity);
     }
 
-    void OnTriggerEnter(Collider hit)
+    private void OnTriggerEnter(Collider hit)
     {
         if (hit.GetComponent<EnemyHealth>())
         {
             hit.GetComponent<EnemyHealth>().Die();
             Destroy(gameObject);
         }
-        else if (hit.GetComponent<ProjectileObstacle>())
+        else if (hit.GetComponent<Breakable>())
         {
-            hit.GetComponent<ProjectileObstacle>().Hit(gameObject.transform.forward);
+            hit.GetComponent<Breakable>().Hit();
             Destroy(gameObject);
         }
     }
