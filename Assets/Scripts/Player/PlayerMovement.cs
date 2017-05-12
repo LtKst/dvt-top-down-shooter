@@ -7,10 +7,39 @@ using UnityEngine;
 /// </summary>
 public class PlayerMovement : MonoBehaviour {
 
+    private Vector3 moveInput;
+    private Vector3 moveVelocity;
     [SerializeField]
-    private float speed = 0.2f;
+    private float moveSpeed = 7;
+    private float initialMoveSpeed;
+    private bool moveSpeedIncreased = false;
 
-	public void LookAt(Vector3 point)
+    private float timer;
+
+    private Rigidbody rb;
+
+    private void Awake()
+    {
+        initialMoveSpeed = moveSpeed;
+
+        rb = GetComponent<Rigidbody>();
+    }
+
+    private void Update()
+    {
+        if (moveSpeedIncreased && timer > 0)
+        {
+            timer -= Time.deltaTime;
+        }
+
+        if (timer <= 0)
+        {
+            moveSpeedIncreased = false;
+            moveSpeed = initialMoveSpeed;
+        }
+    }
+
+    public void LookAt(Vector3 point)
     {
         Vector3 heightCorrectedPoint = new Vector3(point.x, transform.position.y, point.z);
 
@@ -19,6 +48,24 @@ public class PlayerMovement : MonoBehaviour {
 
     public void Move(float horizontal, float vertical)
     {
-        transform.parent.transform.Translate(new Vector3(horizontal*speed, 0, vertical*speed));
+        moveInput = new Vector3(horizontal, 0f, vertical);
+        moveVelocity = moveInput * moveSpeed;
+
+        rb.velocity = moveVelocity;
+    }
+
+    public void IncreaseSpeed(float newSpeed, float duration)
+    {
+        moveSpeed = newSpeed;
+        timer = duration;
+        moveSpeedIncreased = true;
+    }
+
+    public bool MoveSpeedIncreased
+    {
+        get
+        {
+            return moveSpeedIncreased;
+        }
     }
 }

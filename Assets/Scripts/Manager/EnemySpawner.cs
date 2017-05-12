@@ -49,6 +49,11 @@ public class EnemySpawner : MonoBehaviour {
 
                 succesfulSpawn = false;
 
+                if (spawnDelay >= 1)
+                {
+                    ChangeSpawnDelay(initialSpawnDelay - 0.1f);
+                }
+
                 spawnDelay = initialSpawnDelay;
             }
         }

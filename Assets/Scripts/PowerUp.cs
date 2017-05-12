@@ -14,6 +14,8 @@ public class PowerUp : MonoBehaviour {
     [SerializeField]
     private int healAmount = 20;
     [SerializeField]
+    private float boostedSpeed = 0.4f;
+    [SerializeField]
     private float effectDuration = 10;
 
     [Header("Audio")]
@@ -79,7 +81,7 @@ public class PowerUp : MonoBehaviour {
         }
         else
         {
-            transform.localScale = Vector3.Lerp(transform.localScale, new Vector3(), Time.deltaTime * deflationSpeed);
+            transform.localScale = Vector3.Lerp(transform.localScale, Vector3.zero, Time.deltaTime * deflationSpeed);
             light.intensity = Mathf.Lerp(light.intensity, 0, Time.deltaTime * deflationSpeed);
 
             if (transform.localScale.x < 0.01f)
@@ -89,21 +91,25 @@ public class PowerUp : MonoBehaviour {
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider col)
     {
-        if (other.gameObject.tag == "Player" && !pickedUp)
+        if (col.gameObject.tag == "Player" && !pickedUp)
         {
             switch (effect)
             {
                 case Effects.Heal:
                     if (playerHealth.Health < playerHealth.MaxHealth)
                     {
-                        playerHealth.Heal(healAmount);
+                        playerHealth.ModifyHealth(healAmount);
                         pickedUp = true;
                     }
                     break;
                 case Effects.SpeedBoost:
-
+                    if (!playerMovement.MoveSpeedIncreased)
+                    {
+                        playerMovement.IncreaseSpeed(boostedSpeed, effectDuration);
+                        pickedUp = true;
+                    }
                     break;
             }
 

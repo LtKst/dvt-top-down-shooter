@@ -13,29 +13,48 @@ public class EnemyHealth : MonoBehaviour {
     [SerializeField]
     private GameObject smoke;
 
-    private Rigidbody rb;
+    [SerializeField]
+    private int killPoints = 25;
 
-    [HideInInspector]
-    public bool isDead;
+    private Rigidbody rb;
+    
+    private bool isDead;
+
+    private PlayerScore playerScore;
 
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
         rb = GetComponent<Rigidbody>();
+
+        playerScore = GameObject.FindWithTag("Player").GetComponent<PlayerScore>();
     }
 
-    public void Die()
+    public void Die(bool deathByPlayer)
     {
         audioSource.PlayOneShot(hitAudioClip);
 
         if (!isDead)
         {
-            isDead = true;
-
             audioSource.PlayOneShot(shutdownAudioClip);
 
             smoke.SetActive(true);
             rb.useGravity = true;
+
+            if (deathByPlayer)
+            {
+                playerScore.IncreaseScore(killPoints);
+            }
+        }
+
+        isDead = true;
+    }
+
+    public bool IsDead
+    {
+        get
+        {
+            return isDead;
         }
     }
 }

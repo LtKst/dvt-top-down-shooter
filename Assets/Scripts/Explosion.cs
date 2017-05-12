@@ -14,36 +14,48 @@ public class Explosion : MonoBehaviour {
 
     private GameObject[] enemies;
 
-    void Awake()
+    private GameObject[] breakables;
+
+    private void Awake()
     {
         player = GameObject.FindWithTag("Player");
-        enemies = GameObject.FindGameObjectsWithTag("Enemy");
     }
 
-	void Start () {
+	private void Start () {
+        // Damage player
         if (GameObject.FindWithTag("Player"))
         {
-            // Damage player
             distanceFromPlayer = Vector3.Distance(transform.position, player.transform.position);
 
             if (distanceFromPlayer < damageRange && (int)distanceFromPlayer > 0)
             {
-                player.GetComponent<PlayerHealth>().Damage(damage / (int)distanceFromPlayer);
+                player.GetComponent<PlayerHealth>().ModifyHealth(-(damage / (int)distanceFromPlayer));
             }
             else if ((int)distanceFromPlayer <= 0)
             {
-                player.GetComponent<PlayerHealth>().Damage(damage);
+                player.GetComponent<PlayerHealth>().ModifyHealth(-damage);
             }
         }
 
+        // Damage enemies
         enemies = GameObject.FindGameObjectsWithTag("Enemy");
 
-        // Damage enemies
         for (int i = 0; i < enemies.Length; i++)
         {
-            if (Vector3.Distance(transform.position, enemies[i].transform.position) < damageRange)
+            if (Vector3.Distance(transform.position, enemies[i].transform.position) <= damageRange)
             {
-                enemies[i].GetComponent<EnemyHealth>().Die();
+                enemies[i].GetComponent<EnemyHealth>().Die(false);
+            }
+        }
+
+        // Break other breakables
+        breakables = GameObject.FindGameObjectsWithTag("Breakable");
+
+        for (int i = 0; i < breakables.Length; i++)
+        {
+            if (Vector3.Distance(transform.position, breakables[i].transform.position) <= damageRange)
+            {
+                breakables[i].GetComponent<Breakable>().Hit();
             }
         }
     }

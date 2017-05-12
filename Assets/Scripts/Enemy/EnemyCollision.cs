@@ -8,18 +8,28 @@ public class EnemyCollision : MonoBehaviour {
     private GameObject spawnOnPlayerHit;
     private GameObject spawnOnPlayerHitInstance;
 
+    private EnemyHealth enemyHealth;
+
+    private void Awake()
+    {
+        enemyHealth = GetComponent<EnemyHealth>();
+    }
+
     private void OnCollisionEnter(Collision col)
     {
-        if (col.gameObject.tag == "Player")
+        if (!enemyHealth.IsDead)
         {
-            spawnOnPlayerHitInstance = Instantiate(spawnOnPlayerHit);
-            spawnOnPlayerHitInstance.transform.position = transform.position;
+            if (col.gameObject.tag == "Player")
+            {
+                spawnOnPlayerHitInstance = Instantiate(spawnOnPlayerHit);
+                spawnOnPlayerHitInstance.transform.position = transform.position;
 
-            Destroy(gameObject);
-        }
-        else if (col.gameObject.GetComponent<Breakable>())
-        {
-            col.gameObject.GetComponent<Breakable>().Hit();
+                Destroy(gameObject);
+            }
+            else if (col.gameObject.GetComponent<Breakable>())
+            {
+                col.gameObject.GetComponent<Breakable>().Hit();
+            }
         }
     }
 }

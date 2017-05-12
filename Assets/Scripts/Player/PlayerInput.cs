@@ -10,39 +10,46 @@ public class PlayerInput : MonoBehaviour {
     private PlayerMovement playerMovement;
     private PlayerShoot playerShoot;
 
+    private Pause pause;
+
     void Awake()
     {
         playerMovement = GetComponent<PlayerMovement>();
         playerShoot = GetComponent<PlayerShoot>();
+
+        pause = GameObject.FindWithTag("Manager").GetComponent<Pause>();
     }
 
     void Update()
     {
-        // Movement
-        playerMovement.Move(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-
-        // Rotation
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        RaycastHit hit;
-
-        if (Physics.Raycast(ray, out hit))
+        if (!pause.IsPaused)
         {
-            playerMovement.LookAt(hit.point);
+            // Movement
+            playerMovement.Move(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
 
-            Debug.DrawRay(ray.origin, ray.direction * 100);
-        }
+            // Rotation
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        // Shooting
-        if (Input.GetMouseButton(0))
-        {
-            playerShoot.Shoot();
-        }
+            RaycastHit hit;
 
-        // Reloading
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            playerShoot.isReloading = true;
+            if (Physics.Raycast(ray, out hit))
+            {
+                playerMovement.LookAt(hit.point);
+
+                Debug.DrawRay(ray.origin, ray.direction * 100);
+            }
+
+            // Shooting
+            if (Input.GetMouseButton(0))
+            {
+                playerShoot.Shoot();
+            }
+
+            // Reloading
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                playerShoot.isReloading = true;
+            }
         }
     }
 }

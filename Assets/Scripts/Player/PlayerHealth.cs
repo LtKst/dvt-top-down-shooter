@@ -4,14 +4,19 @@ using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour {
 
-    [SerializeField]
-    private GameObject spawnOnDeath;
-    private GameObject spawnOnDeathInstance;
-
+    [Header("Health")]
     [SerializeField]
     private int maxHealth;
     [SerializeField]
     private int health = 100;
+
+    [SerializeField]
+    private bool godMode;
+
+    [Header("GameObjects")]
+    [SerializeField]
+    private GameObject spawnOnDeath;
+    private GameObject spawnOnDeathInstance;
 
     [Header("UI")]
     [SerializeField]
@@ -33,11 +38,6 @@ public class PlayerHealth : MonoBehaviour {
         cursorManager = GameObject.FindWithTag("Manager").GetComponent<CursorManager>();
     }
 
-    private void Update()
-    {
-        health = Mathf.Clamp(health, 0, maxHealth);
-    }
-
     public void Die()
     {
         cursorManager.ChangeCursor(CursorManager.SelectedCursor.pointer);
@@ -49,25 +49,22 @@ public class PlayerHealth : MonoBehaviour {
         gameObject.SetActive(false);
     }
 
-    public void Damage(int damage)
+    public void ModifyHealth(int amount)
     {
-        health -= damage;
-
-        healthBarRect.sizeDelta = new Vector2(initialHealthBarWidth - (initialHealthBarWidth / maxHealth) * (maxHealth - health), healthBarRect.sizeDelta.y);
-        healthText.text = health.ToString() + "/" + maxHealth.ToString();
-
-        if (health <= 0)
+        if (!godMode)
         {
-            Die();
+            health += amount;
+
+            health = Mathf.Clamp(health, 0, maxHealth);
+
+            healthBarRect.sizeDelta = new Vector2(initialHealthBarWidth - (initialHealthBarWidth / maxHealth) * (maxHealth - health), healthBarRect.sizeDelta.y);
+            healthText.text = health.ToString() + "/" + maxHealth.ToString();
+
+            if (health <= 0)
+            {
+                Die();
+            }
         }
-    }
-
-    public void Heal(int amount)
-    {
-        health += amount;
-
-        healthBarRect.sizeDelta = new Vector2(initialHealthBarWidth - (initialHealthBarWidth / maxHealth) * (maxHealth - health), healthBarRect.sizeDelta.y);
-        healthText.text = health.ToString() + "/" + maxHealth.ToString();
     }
 
     public int Health
@@ -75,10 +72,6 @@ public class PlayerHealth : MonoBehaviour {
         get
         {
             return health;
-        }
-        set
-        {
-            health = value;
         }
     }
 

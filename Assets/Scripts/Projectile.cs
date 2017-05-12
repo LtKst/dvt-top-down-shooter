@@ -9,8 +9,8 @@ public class Projectile : MonoBehaviour {
 
     [SerializeField]
     private float speed = 40;
-    private Rigidbody rb;
 
+    private Rigidbody rb;
     private Transform playerTransform;
 
     private void Awake()
@@ -37,12 +37,16 @@ public class Projectile : MonoBehaviour {
     {
         if (hit.GetComponent<EnemyHealth>())
         {
-            hit.GetComponent<EnemyHealth>().Die();
+            hit.GetComponent<EnemyHealth>().Die(true);
             Destroy(gameObject);
         }
         else if (hit.GetComponent<Breakable>())
         {
             hit.GetComponent<Breakable>().Hit();
+            Destroy(gameObject);
+        }
+        else if (!hit.GetComponent<Collider>().isTrigger)
+        {
             Destroy(gameObject);
         }
     }

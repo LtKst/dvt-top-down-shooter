@@ -17,7 +17,7 @@ public class EnemyMovement : MonoBehaviour {
     }
 
     void Update () {
-        if (!enemyHealth.isDead && GameObject.FindWithTag("Player"))
+        if (!enemyHealth.IsDead && GameObject.FindWithTag("Player"))
         {
             transform.position = Vector3.MoveTowards(transform.position, player.transform.position, Time.deltaTime * movementSpeed);
         }

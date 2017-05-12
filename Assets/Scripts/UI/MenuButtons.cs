@@ -7,18 +7,13 @@ public class MenuButtons : MonoBehaviour {
 
 	public void LoadLevel(int scene)
     {
-        SceneManager.LoadScene(scene);
-    }
+        Time.timeScale = 1;
 
-    public void SettingsButton()
-    {
-        print("settings");
+        SceneManager.LoadScene(scene);
     }
 
     public void QuitButton()
     {
-        print("quit");
-
         Application.Quit();
     }
 }

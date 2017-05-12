@@ -42,7 +42,9 @@ public class Breakable : MonoBehaviour {
     public void Hit()
     {
         if (playSoundOnHit)
+        {
             audioSource.PlayOneShot(hitAudioClip[Random.Range(0, hitAudioClip.Length)]);
+        }
 
         if (spawnObjectOnHit)
         {

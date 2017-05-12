@@ -109,7 +109,7 @@ public class PlayerShoot : MonoBehaviour {
 
     public void Shoot()
     {
-        if (bulletsInMag > 0 && shootDelay <= 0)
+        if (bulletsInMag > 0 && shootDelay <= 0 && !isReloading)
         {
             GameObject projectileInstance = Instantiate(projectile);
             projectileInstance.transform.SetParent(projectileParent);
